@@ -9,6 +9,7 @@ var serifaudio='SEs/000029ed.wav';
 window.AudioContext = window.AudioContext || window.webkitAudioContext;  
 const context = new window.AudioContext();
 const volume = 0.5;
+context.createBufferSource().start(0);
 
 var getAudioBuffer = function(url, fn) {  
   var req = new XMLHttpRequest();
