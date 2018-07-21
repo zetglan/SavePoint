@@ -5,43 +5,12 @@ var flag = 1; // 繰り返し（0 = 繰り返す｜1 = 1回だけ）
 var steps = 0;//表示段階
 var canClick=true;
 var serifaudio='SEs/000029ed.wav';
+var tapSound=true;
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;  
 const context = new window.AudioContext();
 const volume = 0.5;
-context.createBufferSource().start(0);
 
-var getAudioBuffer = function(url, fn) {  
-  var req = new XMLHttpRequest();
-  // array buffer を指定
-  req.responseType = 'arraybuffer';
-
-  req.onreadystatechange = function() {
-    if (req.readyState === 4) {
-      if (req.status === 0 || req.status === 200) {
-        // array buffer を audio buffer に変換
-        context.decodeAudioData(req.response, function(buffer) {
-          // コールバックを実行
-          fn(buffer);
-        });
-      }
-    }
-  };
-
-  req.open('GET', url, true);
-  req.send('');
-};
-
-var playSound = function(buffer) {  
-	var source = context.createBufferSource();
-	var gainNode = context.createGain();
-	gainNode.gain.value = volume
-    source.buffer = buffer;
-    source.connect(gainNode);
-    gainNode.connect(context.destination);
-    source.start(0);
-};
-  
 
 function randomChars(){
 var random = Math.floor( Math.random() * 7 );
@@ -86,22 +55,6 @@ var random = Math.floor( Math.random() * 7 );
 
 function startDisplay(){
 
-  // サウンドを読み込む
-  if(steps==0){
-        var audio='SEs/00002a1b.wav';
-  }else if(steps==2){
-        var audio='SEs/000029a7.wav';
-  }else{
-        var audio='SEs/nothing.wav';
-  }
-  getAudioBuffer(audio, function(buffer) {
-  	if(steps==0){
-        playSound(buffer);
-  	}else if(steps==3){
-  		console.log("GO!");
-        playSound(buffer);
-  	}
-  });
 
 
 	if(canClick){
@@ -110,11 +63,13 @@ function startDisplay(){
 				var box = document.getElementById('displaybox');
 				var area = document.getElementById('charsarea');
 				if(steps==0){//step0=最初の文字列を表示
+					tapSound=true;
 					canClick=false;
 					box.style.backgroundColor = "rgba(0,0,0,100)";
 					box.style.borderColor = "rgba(255,255,255,100)";
+					steps=1
 					appearChars();
-				}else if(steps==1){//step1=セーブ画面
+				}else if(steps==2){//step1=セーブ画面
 					area.textContent = `あなた　  LV1  　3：20
 だれキズかいじょう　うけつけ
 `;
@@ -123,7 +78,7 @@ function startDisplay(){
 					area.insertAdjacentHTML('beforeend', '<div id=saveline><img src="img/heart.png" id=heart>セーブ </div>');
 					steps++;
 					console.log(steps);
-				}else if(steps==2){//step1=セーブ画面
+				}else if(steps==3){//step1=セーブ画面
 					steps++;
 					area.textContent = `あなた　  LV1  　3：20
 だれキズかいじょう　うけつけ
@@ -133,7 +88,7 @@ function startDisplay(){
 					area.insertAdjacentHTML('beforeend', '<div id=saveline>セーブしました。　　　 </div>');
 					area.style.color="yellow";
 					console.log(steps);
-				}else if(steps==3){
+				}else if(steps==4){
 					steps=0;
 					box.style.width = "90vw";
 					box.style.backgroundColor = "rgba(0,0,0,0)";
@@ -142,6 +97,7 @@ function startDisplay(){
 					area.textContent ="";
 					count=0;
 					box.style.textAlign = "left";
+					
 				}
 		}
 }
@@ -153,12 +109,10 @@ function appearChars(){
 	area.textContent = type;
 	count++;
 	var rep = setTimeout("appearChars()", speed);
-	getAudioBuffer(serifaudio, function(buffer) {
-	    	var serif = setTimeout(function(){playSound(buffer)},speed);
-	    	if(count > chars.length){clearTimeout(serif);}
-	  });
+	var serif = setTimeout(function(){wa.play("000029ed.wav");},speed);
+      		if(count > chars.length){clearTimeout(serif);}
 	if(count > chars.length){
-		steps++;
+		steps=2;
 		canClick=true;
 		console.log(steps);
 		if(flag == 1){ clearTimeout(rep);  }
@@ -166,3 +120,22 @@ function appearChars(){
 		
 	}
 }
+
+window.onload = function() {
+var audio1='SEs/00002a1b.wav';
+var audio2='SEs/000029ed.wav';
+var audio3='SEs/000029a7.wav';
+
+// ページ読み込みと同時にロード
+    wa.loadFile(audio1, function(buffer) {
+      document.addEventListener("click", function() {
+      	if(steps==1&&tapSound){ wa.play("00002a1b.wav");tapSound=false;}
+      });
+    });
+
+    wa.loadFile(audio3, function(buffer) {
+      document.addEventListener("click", function() {
+      	if(steps==4)wa.play("000029a7.wav");
+      });
+    });
+  }
