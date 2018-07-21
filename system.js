@@ -6,70 +6,86 @@ var steps = 0;//表示段階
 var canClick=true;
 var serifaudio='SEs/000029ed.wav';
 var tapSound=true;
+var clickSerif=0;
+var charsnum=[0];
+var timer;
+var neutralTime=10000;
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;  
 const context = new window.AudioContext();
 const volume = 0.5;
 
 
-function randomChars(){
-var random = Math.floor( Math.random() * 7 );
-	switch(random){
+function randomChars(charsnum){
+var random = Math.floor( Math.random() * 50 );
+console.log(random);
+if(random==1){
+	return `* ケツイ。`
+}else{
+	switch(charsnum[0]){
 		case 0:
+		charsnum[0]++;
 		return `*（わきあがりつつある　かいじょうを
 　まのあたりにして
 　あなたはケツイが　みなぎった）`;
 	
 		case 1:
+		charsnum[0]++;
 		return `*（あなたはかんじる…　なにかを
 　あなたはテミ意で　みたされた。）`;
 
 		case 2:
+		charsnum[0]++;
 		return `*（いつかあなたも　がっきをもち
 　ライブに　しゅつえんするかもしれない...
 　そうおもったら　ケツイが　みなぎった）`;
 
 		case 3:
+		charsnum[0]++;
 		return `*（あのギターの　かたちの
 　ちょうどよさを　おもいだすと
 　ケツイが　みなぎった）`;
 
 		case 4:
+		charsnum[0]++;
 		return `*（いつかネズミは　おんがくを
 　たのしむ　ほうほうを
 　みつける　かもしれない
 　そうおもったら　ケツイが　みなぎった）`;
 
 		case 5:
+		charsnum[0]++;
 		return `*（あのイヌは　カンペキな
 　ゆきピアノが　かんせいするまで
 　けっして　あきらめないだろう...
 　そうおもったら　ケツイが　みなぎった）`;
 
 		case 6:
+		charsnum[0]=0;
 		return `*（かいじょうの　おちついた
 　ふんいきに…
 　ケツイが　みなぎった）`;
 	}
 }
+}
 
 function startDisplay(){
-
-
-
-	if(canClick){
-				console.log("let's start");
-				chars=randomChars();
+	clearTimeout(timer);
+    timer=setTimeout('resetView()',neutralTime);
 				var box = document.getElementById('displaybox');
 				var area = document.getElementById('charsarea');
 				if(steps==0){//step0=最初の文字列を表示
+					clickSerif=0;
+					chars=randomChars(charsnum);
 					tapSound=true;
-					canClick=false;
 					box.style.backgroundColor = "rgba(0,0,0,100)";
 					box.style.borderColor = "rgba(255,255,255,100)";
 					steps=1
 					appearChars();
-				}else if(steps==2){//step1=セーブ画面
+				}else if(steps==1){//文字列表示中
+					canClick=false;
+					count=chars.length+1;
+				}else if(steps==2){//step2=セーブ画面
 					area.textContent = `あなた　  LV1  　3：20
 だれキズかいじょう　うけつけ
 `;
@@ -77,8 +93,7 @@ function startDisplay(){
 					box.style.textAlign = "center";
 					area.insertAdjacentHTML('beforeend', '<div id=saveline><img src="img/heart.png" id=heart>セーブ </div>');
 					steps++;
-					console.log(steps);
-				}else if(steps==3){//step1=セーブ画面
+				}else if(steps==3){//step3=セーブ完了画面
 					steps++;
 					area.textContent = `あなた　  LV1  　3：20
 だれキズかいじょう　うけつけ
@@ -87,8 +102,7 @@ function startDisplay(){
 					box.style.textAlign = "center";
 					area.insertAdjacentHTML('beforeend', '<div id=saveline>セーブしました。　　　 </div>');
 					area.style.color="yellow";
-					console.log(steps);
-				}else if(steps==4){
+				}else if(steps==4){//step4=ニュートラル
 					steps=0;
 					box.style.width = "90vw";
 					box.style.backgroundColor = "rgba(0,0,0,0)";
@@ -97,9 +111,8 @@ function startDisplay(){
 					area.textContent ="";
 					count=0;
 					box.style.textAlign = "left";
-					
 				}
-		}
+		
 }
 
 function appearChars(){
@@ -110,18 +123,35 @@ function appearChars(){
 	count++;
 	var rep = setTimeout("appearChars()", speed);
 	var serif = setTimeout(function(){wa.play("000029ed.wav");},speed);
-      		if(count > chars.length){clearTimeout(serif);}
+    if(count > chars.length){clearTimeout(serif);}
 	if(count > chars.length){
 		steps=2;
 		canClick=true;
-		console.log(steps);
 		if(flag == 1){ clearTimeout(rep);  }
 		else{ count = 0; }
 		
 	}
 }
 
+function resetView(){
+	var box = document.getElementById('displaybox');
+	var area = document.getElementById('charsarea');
+	steps=0;
+	box.style.width = "90vw";
+	box.style.backgroundColor = "rgba(0,0,0,0)";
+	box.style.borderColor = "rgba(255,255,255,0)";
+	area.style.color="white";
+	area.textContent ="";
+	count=0;
+	box.style.textAlign = "left";
+	clearTimeout(timer);
+	timer=setTimeout('resetView()',neutralTime);
+	console.log("view reset");
+}
+
+
 window.onload = function() {
+timer=setTimeout('resetView()',neutralTime);
 var audio1='SEs/00002a1b.wav';
 var audio2='SEs/000029ed.wav';
 var audio3='SEs/000029a7.wav';
@@ -132,6 +162,14 @@ var audio3='SEs/000029a7.wav';
       	if(steps==1&&tapSound){ wa.play("00002a1b.wav");tapSound=false;}
       });
     });
+
+   wa.loadFile(audio2, function(buffer) {
+      document.addEventListener("click", function() {
+      	wa.playSilent();
+	  });
+    });
+
+ 
 
     wa.loadFile(audio3, function(buffer) {
       document.addEventListener("click", function() {
