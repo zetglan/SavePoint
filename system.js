@@ -181,7 +181,7 @@ var audio3='SEs/000029a7.wav';
       });
     });
 
-    document.addEventListener("ontouchstart", function() {
+    document.addEventListener("touchstart", function() {
       	startDisplay();
       });
     
