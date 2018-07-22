@@ -155,10 +155,10 @@ window.addEventListener('touchmove', function(event) {
 
 
 window.onload = function() {
-timer=setTimeout('resetView()',neutralTime);
-var audio1='SEs/00002a1b.wav';
-var audio2='SEs/000029ed.wav';
-var audio3='SEs/000029a7.wav';
+	timer=setTimeout('resetView()',neutralTime);
+	var audio1='SEs/00002a1b.wav';
+	var audio2='SEs/000029ed.wav';
+	var audio3='SEs/000029a7.wav';
 
 // ページ読み込みと同時にロード
     wa.loadFile(audio1, function(buffer) {
@@ -184,5 +184,13 @@ var audio3='SEs/000029a7.wav';
     document.addEventListener("touchstart", function() {
       	startDisplay();
       });
+
+    document.body.onload = function() {
+        if (this.webkitRequestFullScreen) {
+             this.webkitRequestFullScreen();
+        }
+        else if (this. mozRequestFullScreen) {
+            this. mozRequestFullScreen();
+        }
     
   }
