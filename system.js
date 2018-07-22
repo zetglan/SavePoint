@@ -149,6 +149,10 @@ function resetView(){
 	console.log("view reset");
 }
 
+window.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+});
+
 
 window.onload = function() {
 timer=setTimeout('resetView()',neutralTime);
