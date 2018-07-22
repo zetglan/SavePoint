@@ -180,4 +180,9 @@ var audio3='SEs/000029a7.wav';
       	if(steps==4)wa.play("000029a7.wav");
       });
     });
+
+    document.addEventListener("ontouchstart", function() {
+      	startDisplay();
+      });
+    
   }
