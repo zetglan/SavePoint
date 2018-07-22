@@ -162,13 +162,13 @@ var audio3='SEs/000029a7.wav';
 
 // ページ読み込みと同時にロード
     wa.loadFile(audio1, function(buffer) {
-      document.addEventListener("click", function() {
+      document.addEventListener("touchstart", function() {
       	if(steps==1&&tapSound){ wa.play("00002a1b.wav");tapSound=false;}
       });
     });
 
    wa.loadFile(audio2, function(buffer) {
-      document.addEventListener("click", function() {
+      document.addEventListener("touchstart", function() {
       	wa.playSilent();
 	  });
     });
@@ -176,7 +176,7 @@ var audio3='SEs/000029a7.wav';
  
 
     wa.loadFile(audio3, function(buffer) {
-      document.addEventListener("click", function() {
+      document.addEventListener("touchstart", function() {
       	if(steps==4)wa.play("000029a7.wav");
       });
     });
