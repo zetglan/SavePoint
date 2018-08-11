@@ -185,12 +185,18 @@ window.onload = function() {
       	startDisplay();
       });
 
-    document.body.onload = function() {
-        if (this.webkitRequestFullScreen) {
-             this.webkitRequestFullScreen();
-        }
-        else if (this. mozRequestFullScreen) {
-            this. mozRequestFullScreen();
-        }
+    // スクロールを無効にする
+	$(window).on('touchmove.noScroll', function(e) {
+	    e.preventDefault();
+	});
+
+    //document.body.onload = function() {
+    //    if (this.webkitRequestFullScreen) {
+    //         this.webkitRequestFullScreen();
+    //    }
+    //    else if (this. mozRequestFullScreen) {
+    //        this. mozRequestFullScreen();
+    //    }
     
-  }
+  	//}
+}
